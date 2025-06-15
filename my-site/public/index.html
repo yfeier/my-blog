@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+	<meta name="generator" content="Hugo 0.145.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>我的博客</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+
+      <script src="/js/main.js"></script>
+
+
+</head>
+<body>
+  <header>
+    <h1>我的博客</h1>
+
+  <nav>
+    <ul>
+    <li>
+      <a href="/posts/">博客</a>
+    </li>
+    <li>
+      <a href="/tech/">技术</a>
+    </li>
+    <li>
+      <a href="/misc/">杂谈</a>
+    </li>
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+  <p>Laborum voluptate pariatur ex culpa magna nostrud est incididunt fugiat
+pariatur do dolor ipsum enim. Consequat tempor do dolor eu. Non id id anim anim
+excepteur excepteur pariatur nostrud qui irure ullamco.</p>
+
+  
+    <h2><a href="/tech/build-hugo-site3/">Hugo网站搭建3：图片</a></h2>
+    <h2 id="图片存储">图片存储</h2>
+<p><a href="https://avgle.top/pages/">本网站</a>主要展示图片，因此需要将图片存储到网络上。<br>
+对于个人网站，最好挑选一个免费的图片空间。<br>
+经过挑选，这里使用<a href="https://cloudinary.com/invites/lpov9zyyucivvxsnalc5/fxh9oezpff5hjdmadvzq?t=default">Cloudinary</a>网站。<br>
+该网站提供25Credit免费使用量。如果访问量大，也可升级收费版本。</p>
+<pre tabindex="0"><code>1 Credit =
+ 1,000 Transformations OR
+ 1 GB Storage OR
+ 1 GB Image Bandwidth OR
+ 2 GB Video Bandwidth
+</code></pre><p>如需申请，请点击<a href="https://cloudinary.com/invites/lpov9zyyucivvxsnalc5/fxh9oezpff5hjdmadvzq?t=default">Cloudinary</a></p>
+<h2 id="图片上传">图片上传</h2>
+<p>通过Cloudinary网站可以直接上传图片，但如果需要上传的图片量很大的时候，手动上传就很麻烦。
+由于Cloudinary提供了API接口，因此可通过脚本工具进行上传。</p>
+<p>这里使用python编写上传脚本，需要安装cloudinary插件。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># -*- coding: utf-8 -*- #</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">re</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">datetime</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">cloudinary</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">cloudinary.api</span> <span class="kn">import</span> <span class="n">delete_resources_by_tag</span><span class="p">,</span> <span class="n">resources_by_tag</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">cloudinary.uploader</span> <span class="kn">import</span> <span class="n">upload</span><span class="p">,</span> <span class="n">explicit</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">cloudinary.utils</span> <span class="kn">import</span> <span class="n">cloudinary_url</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 数值Cloudinary网站提供</span>
+</span></span><span class="line"><span class="cl"><span class="n">cloudinary</span><span class="o">.</span><span class="n">config</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cloud_name</span><span class="o">=</span><span class="s2">&#34;******&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">api_key</span><span class="o">=</span><span class="s2">&#34;******&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">api_secret</span><span class="o">=</span><span class="s2">&#34;******&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_current_dir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">list_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dirs</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">_dir</span> <span class="ow">in</span> <span class="n">list_dir</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">_dir</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">            <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_dir</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dirs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">dirs</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_all_files</span><span class="p">(</span><span class="n">file_dir</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">file_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ext_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.jpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="s1">&#39;.JPG&#39;</span><span class="p">,</span> <span class="s1">&#39;.bmp&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">file_dir</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ext_list</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">file_list</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">dump_response</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Upload response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;  </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">response</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">upload_files</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">img_folder</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;--- Upload a local file&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">upload</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">img</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">public_id</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">folder</span><span class="o">=</span><span class="n">img_folder</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dump_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">_filepath</span><span class="p">,</span> <span class="n">_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="k">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+\.&#39;</span><span class="p">,</span> <span class="n">_filename</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">.JPG&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_filepath</span><span class="p">,</span> <span class="n">pid</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_start_id</span><span class="p">(</span><span class="n">begin</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">start_id</span> <span class="o">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">str_date</span> <span class="o">=</span> <span class="n">begin</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">start_id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">img_folder</span> <span class="o">=</span> <span class="s2">&#34;my_blog/pages/&#34;</span> <span class="o">+</span> <span class="n">str_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">test_img</span> <span class="o">=</span> <span class="n">img_folder</span> <span class="o">+</span> <span class="s2">&#34;/</span><span class="si">{:0&gt;4d}</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">res</span> <span class="o">=</span> <span class="n">explicit</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                <span class="n">test_img</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;upload&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">start_id</span> <span class="o">=</span> <span class="n">start_id</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">start_id</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">NEED_CHECK_UPDATE</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl"><span class="n">LIMIT_SIZE</span> <span class="o">=</span> <span class="mi">30</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">begin</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">start_id</span> <span class="o">=</span> <span class="n">get_start_id</span><span class="p">(</span><span class="n">begin</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">up_num</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">dir_list</span> <span class="o">=</span> <span class="n">get_current_dir</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">cur_dir</span> <span class="ow">in</span> <span class="n">dir_list</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># print(cur_dir)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">NEED_CHECK_UPDATE</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">test_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">,</span> <span class="s1">&#39;0001.JPG&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">test_file</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">files</span> <span class="o">=</span> <span class="n">get_all_files</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">str_date</span> <span class="o">=</span> <span class="n">begin</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">start_id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">img_folder</span> <span class="o">=</span> <span class="s2">&#34;my_blog/pages/&#34;</span> <span class="o">+</span> <span class="n">str_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">files</span> <span class="o">=</span> <span class="n">get_all_files</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pid</span> <span class="o">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">file_size</span> <span class="o">=</span> <span class="n">file_size</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">file_size</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>   <span class="c1"># 10M</span>
+</span></span><span class="line"><span class="cl">                <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">upload_files</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&#34;</span><span class="si">{:0&gt;4d}</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pid</span><span class="p">),</span> <span class="n">img_folder</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">pid</span> <span class="o">=</span> <span class="n">pid</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">start_id</span> <span class="o">=</span> <span class="n">start_id</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">up_num</span> <span class="o">=</span> <span class="n">up_num</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">LIMIT_SIZE</span> <span class="o">&lt;</span> <span class="n">up_num</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">pass</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>上传后，在Cloudinary网站的Media Library中可以查看上传的图片。</p>
+  
+    <h2><a href="/tech/build-flutter-app1/">利用Flutter做成应用1：环境</a></h2>
+    <h2 id="在windows上搭建flutter开发环境">在Windows上搭建Flutter开发环境</h2>
+<p>如果访问Flutter受到限制，在环境变量中加入下面的变量</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PUB_HOSTED_URL</span><span class="o">=</span>https://pub.flutter-io.cn
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">FLUTTER_STORAGE_BASE_URL</span><span class="o">=</span>https://storage.flutter-io.cn
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>安装Git命令行工具
+<a href="https://git-scm.com/download/win">Git for Windows </a></p>
+<h2 id="获取flutter-sdk">获取Flutter SDK</h2>
+<p>下载<br>
+<a href="https://docs.flutter.dev/development/tools/sdk/releases">https://docs.flutter.dev/development/tools/sdk/releases</a>
+<a href="https://flutter.cn/docs/development/tools/sdk/releases">https://flutter.cn/docs/development/tools/sdk/releases</a></p>
+<p>将安装包zip解压到你想安装Flutter SDK的路径，在Flutter安装目录的flutter文件下找到flutter_console.bat，双击运行并启动flutter控制台。
+如果用cmd启动控制台，需要将flutter\bin对应路径添加到环境变量Path中。</p>
+<p>Flutter有三个发布渠道，分别为stable、beta 和 master。
+如果已经装好Flutter需要升级的话，使用如下命令。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">flutter channel stable
+</span></span><span class="line"><span class="cl">flutter upgrade
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果需要更新pubspec.yaml文件里列出的所有依赖的packages，使用如下命令。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">flutter pub upgrade
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果需要自动判断那些过时了的 package 依赖以及获取更新建议，现在你可以使用 outdated 命令。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">flutter pub outdated
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>打开一个新的命令提示符或PowerShell窗口并运行以下命令以查看是否需要安装任何依赖项来完成安装：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">flutter doctor
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="flutter插件">Flutter插件</h2>
+<p><a href="https://pub.dev/">https://pub.dev/</a><br>
+<a href="https://pub.flutter-io.cn/">https://pub.flutter-io.cn/</a></p>
+<h2 id="开发工具">开发工具</h2>
+<p><a href="https://developer.android.google.cn/studio">Android Studio</a></p>
+<p>启动Android Studio，安装两个插件（File-&gt;Setting-&gt;Plugins)</p>
+<ul>
+<li>Flutter插件： 支持Flutter开发工作流 (运行、调试、热重载等).</li>
+<li>Dart插件： 提供代码分析 (输入代码时进行验证、代码补全等).</li>
+</ul>
+<p>安装Flutter插件时会同时要求安装Dart插件。</p>
+<h3 id="tips">Tips</h3>
+<pre tabindex="0"><code> flutter doctor --android-licenses
+</code></pre><p>Android sdkmanager not found. Update to the latest Android SDK and ensure that the cmdline-tools are installed to  resolve this.</p>
+  
+    <h2><a href="/posts/hello-world/">AI发展趋势与工具概览</a></h2>
+    <h2 id="ai发展趋势与工具概览">AI发展趋势与工具概览</h2>
+<p>人工智能（AI）技术正在以前所未有的速度发展，深刻改变着我们的生活和工作方式。本文将探讨AI领域的最新发展趋势，并介绍一些实用的AI工具。</p>
+<h3 id="一ai发展趋势">一、AI发展趋势</h3>
+<ol>
+<li>
+<p><strong>大语言模型的崛起</strong></p>
+<ul>
+<li>ChatGPT、Claude等大语言模型的出现，标志着AI进入了一个新纪元</li>
+<li>这些模型能够理解自然语言，进行创造性写作，甚至编写代码</li>
+<li>未来将向多模态方向发展，整合文本、图像、音频等多种形式</li>
+</ul>
+</li>
+<li>
+<p><strong>AI民主化</strong></p>
+<ul>
+<li>AI技术正变得越来越易于使用</li>
+<li>低代码/无代码平台让非技术人员也能创建AI应用</li>
+<li>开源社区推动AI技术普及</li>
+</ul>
+</li>
+<li>
+<p><strong>垂直领域AI应用</strong></p>
+<ul>
+<li>医疗、金融、教育等特定领域的AI解决方案</li>
+<li>专业化的AI模型和工具</li>
+<li>行业定制化AI服务</li>
+</ul>
+</li>
+</ol>
+<h3 id="二实用ai工具推荐">二、实用AI工具推荐</h3>
+<ol>
+<li>
+<p><strong>写作助手</strong></p>
+<ul>
+<li>ChatGPT：最知名的大语言模型，适合各种写作任务</li>
+<li>Claude：Anthropic开发的AI助手，以准确性和安全性著称</li>
+<li>Notion AI：集成在Notion中的AI写作助手</li>
+</ul>
+</li>
+<li>
+<p><strong>图像生成</strong></p>
+<ul>
+<li>Midjourney：强大的AI图像生成工具</li>
+<li>DALL-E：OpenAI开发的图像生成模型</li>
+<li>Stable Diffusion：开源的图像生成模型</li>
+</ul>
+</li>
+<li>
+<p><strong>编程助手</strong></p>
+<ul>
+<li>GitHub Copilot：AI编程助手，支持多种编程语言</li>
+<li>Codeium：免费的AI代码补全工具</li>
+<li>Tabnine：智能代码补全工具</li>
+</ul>
+</li>
+<li>
+<p><strong>视频制作</strong></p>
+<ul>
+<li>Runway：AI视频编辑和生成工具</li>
+<li>Synthesia：AI视频生成平台</li>
+<li>D-ID：AI数字人视频制作工具</li>
+</ul>
+</li>
+</ol>
+<h3 id="三未来展望">三、未来展望</h3>
+<p>AI技术的发展将继续加速，我们可能会看到：</p>
+<ul>
+<li>更智能的AI助手</li>
+<li>更自然的AI交互方式</li>
+<li>更强大的AI创作能力</li>
+<li>更完善的AI伦理规范</li>
+</ul>
+<p>在这个快速发展的时代，保持学习和适应新技术的能力变得尤为重要。通过合理利用AI工具，我们可以提高工作效率，激发创造力，更好地应对未来的挑战。</p>
+  
+    <h2><a href="/posts/post-3/">Post 3</a></h2>
+    <p>Occaecat aliqua consequat laborum ut ex aute aliqua culpa quis irure esse magna dolore quis. Proident fugiat labore eu laboris officia Lorem enim. Ipsum occaecat cillum ut tempor id sint aliqua incididunt nisi incididunt reprehenderit. Voluptate ad minim sint est aute aliquip esse occaecat tempor officia qui sunt. Aute ex ipsum id ut in est velit est laborum incididunt. Aliqua qui id do esse sunt eiusmod id deserunt eu nostrud aute sit ipsum. Deserunt esse cillum Lorem non magna adipisicing mollit amet consequat.</p>
+  
+    <h2><a href="/posts/post-2/">Post 2</a></h2>
+    <p>Anim eiusmod irure incididunt sint cupidatat. Incididunt irure irure irure nisi ipsum do ut quis fugiat consectetur proident cupidatat incididunt cillum. Dolore voluptate occaecat qui mollit laborum ullamco et. Ipsum laboris officia anim laboris culpa eiusmod ex magna ex cupidatat anim ipsum aute. Mollit aliquip occaecat qui sunt velit ut cupidatat reprehenderit enim sunt laborum. Velit veniam in officia nulla adipisicing ut duis officia.</p>
+<p>Exercitation voluptate irure in irure tempor mollit Lorem nostrud ad officia. Velit id fugiat occaecat do tempor. Sit officia Lorem aliquip eu deserunt consectetur. Aute proident deserunt in nulla aliquip dolore ipsum Lorem ut cupidatat consectetur sit sint laborum. Esse cupidatat sit sint sunt tempor exercitation deserunt. Labore dolor duis laborum est do nisi ut veniam dolor et nostrud nostrud.</p>
+  
+    <h2><a href="/posts/post-1/">Post 1</a></h2>
+    <p>Tempor proident minim aliquip reprehenderit dolor et ad anim Lorem duis sint eiusmod. Labore ut ea duis dolor. Incididunt consectetur proident qui occaecat incididunt do nisi Lorem. Tempor do laborum elit laboris excepteur eiusmod do. Eiusmod nisi excepteur ut amet pariatur adipisicing Lorem.</p>
+<p>Occaecat nulla excepteur dolore excepteur duis eiusmod ullamco officia anim in voluptate ea occaecat officia. Cillum sint esse velit ea officia minim fugiat. Elit ea esse id aliquip pariatur cupidatat id duis minim incididunt ea ea. Anim ut duis sunt nisi. Culpa cillum sit voluptate voluptate eiusmod dolor. Enim nisi Lorem ipsum irure est excepteur voluptate eu in enim nisi. Nostrud ipsum Lorem anim sint labore consequat do.</p>
+  
+
+  </main>
+  <footer>
+    <p>Copyright 2025. All rights reserved.</p>
+
+  </footer>
+</body>
+</html>

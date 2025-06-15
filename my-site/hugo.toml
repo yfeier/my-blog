@@ -1,0 +1,106 @@
+baseURL = 'http://example.org/'
+languageCode = 'zh-cn'
+title = '我的博客'
+theme = 'FixIt'
+publishDir = "yfeier.github.io"
+
+[params]
+  # 网站描述
+  description = "我的个人博客"
+  # 网站关键词
+  keywords = ["博客", "技术", "杂谈"]
+  # 网站默认主题样式 ("light", "dark", "auto")
+  defaultTheme = "auto"
+  # 公共 git 仓库路径，仅在 enableGitInfo 设为 true 时有效
+  gitRepo = ""
+  #  哪种哈希函数用来 SRI, 为空时表示不使用 SRI
+  # ("sha256", "sha384", "sha512", "md5")
+  fingerprint = ""
+  #  日期格式
+  dateFormat = "2006-01-02"
+  # 网站图片，用于 Open Graph 和 Twitter Cards
+  images = ["/logo.png"]
+
+[params.toc]
+  enable = true  # 启用文章目录
+
+[params.posts]
+  title = "博客"  # 文章栏目标题
+  description = "技术分享与随笔"  # 栏目描述
+  contentDir = "posts"  # 对应 content/posts 文件夹
+
+[params.projects]
+  title = "项目"  # 项目栏目标题
+  description = "我的开源项目与作品"  
+  contentDir = "projects"  # 对应 content/projects 文件夹
+
+[params.home]
+  # 主页上的文章数量
+  postsPaginate = 6
+  # 主页上的文章排序方式
+  postsSortBy = "date"
+  # 主页上的文章排序方向
+  postsSortOrder = "desc"
+
+[params.social]
+  GitHub = "your-github"
+  Twitter = "your-twitter"
+  Email = "your-email"
+
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "博客"
+    url = "/posts/"
+    weight = 10
+  [[menu.main]]
+    identifier = "tech"
+    name = "技术"
+    url = "/tech/"
+    weight = 20
+  [[menu.main]]
+    identifier = "misc"
+    name = "杂谈"
+    url = "/misc/"
+    weight = 30
+
+# 评论系统配置
+[params.page.comment]
+  enable = true
+  # 评论系统提供商 ("disqus", "giscus", "valine", "waline", "facebook", "utterances", "gitalk", "telegram", "commento", "vssue", "remark42", "twikoo", "cactus", "gitter", "cusdis", "discourse", "isso", "coral", "utterances", "artalk", "waline", "giscus", "telegram", "gitalk", "commento", "vssue", "remark42", "twikoo", "cactus", "gitter", "cusdis", "discourse", "isso", "coral", "artalk")
+  provider = "giscus"
+  # 评论系统配置
+  [params.page.comment.giscus]
+    repo = "your-github-username/your-repo-name"
+    repoId = "your-repo-id"
+    category = "Announcements"
+    categoryId = "your-category-id"
+    mapping = "pathname"
+    reactionsEnabled = "1"
+    emitMetadata = "0"
+    inputPosition = "bottom"
+    theme = "light"
+    lang = "zh-CN"
+    loading = "lazy"
+
+[markup]
+  _merge = "shallow"
+  [markup.highlight]
+    codeFences = true
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = false
+[outputs]
+  _merge = "shallow"
+[taxonomies]
+  _merge = "shallow"
+
+[build]
+  _merge = "shallow"
+  [build.processing]
+    [build.processing.css]
+      [build.processing.css.postcss]
+        enable = true
+
+
+

@@ -1,0 +1,56 @@
+categories:
+  - name: AI工具
+    description: 人工智能相关工具和网站
+    websites:
+      - name: ChatGPT
+        url: https://chat.openai.com
+        description: OpenAI开发的大型语言模型对话系统
+        icon: 🤖
+      - name: Midjourney
+        url: https://www.midjourney.com
+        description: AI图像生成工具
+        icon: 🎨
+      - name: Claude
+        url: https://claude.ai
+        description: Anthropic开发的AI助手
+        icon: 🧠
+
+  - name: 影视资源
+    description: 电影、电视剧观看和下载网站
+    websites:
+      - name: Netflix
+        url: https://www.netflix.com
+        description: 全球最大的流媒体平台
+        icon: 🎬
+      - name: 哔哩哔哩
+        url: https://www.bilibili.com
+        description: 中国领先的视频弹幕网站
+        icon: 📺
+      - name: YouTube
+        url: https://www.youtube.com
+        description: 全球最大的视频分享平台
+        icon: 🎥
+      - name: 爱看影院
+        url: https://v.ikanbot.com/
+        description: 免费影视资源站，提供电影、电视剧、综艺、动漫等在线播放
+        icon: 🎞️
+
+  - name: 学习资源
+    description: 优质的学习平台和资源
+    websites:
+      - name: Coursera
+        url: https://www.coursera.org
+        description: 提供来自顶尖大学的在线课程
+        icon: 📚
+      - name: GitHub
+        url: https://github.com
+        description: 全球最大的代码托管平台
+        icon: 💻
+      - name: Udemy
+        url: https://www.udemy.com
+        description: 在线学习平台，提供各类课程
+        icon: 🎓
+      - name: 时光图书馆
+        url: https://atimebook.com/
+        description: 经典珍藏电子书、杂志、老照片、老课本、连环画等数字资源收藏与分享平台
+        icon: 📚 
