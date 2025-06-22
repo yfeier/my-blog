@@ -66,6 +66,11 @@ mainSections = ["tech"]
     name = "杂谈"
     url = "/misc/"
     weight = 30
+  [[menu.main]]
+    identifier = "websites"
+    name = "网站导航"
+    url = "/websites/"
+    weight = 40
 
 # 评论系统配置
 [params.page.comment]

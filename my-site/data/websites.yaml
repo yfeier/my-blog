@@ -53,4 +53,12 @@ categories:
       - name: 时光图书馆
         url: https://atimebook.com/
         description: 经典珍藏电子书、杂志、老照片、老课本、连环画等数字资源收藏与分享平台
-        icon: 📚 
+        icon: 📚
+
+  - name: 系统工具
+    description: Windows/Office 激活与系统相关工具
+    websites:
+      - name: KMS.CX
+        url: https://kms.cx/
+        description: 一键激活 Windows/Office，提供密钥、脚本、安装教程等服务，支持小白操作。
+        icon: 🖥️ 

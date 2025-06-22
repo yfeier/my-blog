@@ -1,0 +1,120 @@
+{{ define "title" }}网站导航{{ end }}
+
+{{ define "content" }}
+<style>
+.websites-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin: 32px 0;
+}
+.website-card {
+  background: var(--card-bg, #fff);
+  color: var(--card-text, #222);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 18px 16px 14px 16px;
+  transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid #e5e7eb;
+}
+.website-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+  z-index: 2;
+  border-color: #a3a3a3;
+}
+.website-card .site-title {
+  font-size: 1.08em;
+  font-weight: bold;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.website-card .site-desc {
+  font-size: 0.97em;
+  color: var(--card-desc, #666);
+  margin-top: 4px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 3.1em;
+  max-height: 4.5em;
+  transition: all 0.2s;
+}
+.website-card .desc-pop {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 12px);
+  min-width: 220px;
+  max-width: 320px;
+  background: var(--card-bg, #fff);
+  color: var(--card-text, #222);
+  border-radius: 8px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  padding: 14px 18px;
+  font-size: 0.97em;
+  z-index: 99;
+  white-space: pre-line;
+  border: 1px solid #e5e7eb;
+  word-break: break-all;
+}
+.website-card:hover .desc-pop {
+  display: block;
+}
+@media (max-width: 1100px) {
+  .websites-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .websites-grid { grid-template-columns: 1fr; }
+}
+/* 暗黑模式支持 */
+@media (prefers-color-scheme: dark) {
+  .website-card {
+    --card-bg: #23272e;
+    --card-text: #e6e6e6;
+    --card-desc: #b0b0b0;
+    background: var(--card-bg);
+    color: var(--card-text);
+    border-color: #444851;
+  }
+  .website-card .site-desc {
+    color: var(--card-desc);
+  }
+  .website-card .desc-pop {
+    background: var(--card-bg, #23272e);
+    color: var(--card-text, #e6e6e6);
+    border-color: #444851;
+  }
+}
+</style>
+<div class="page websites">
+  <h1>好站推荐</h1>
+  {{ $data := site.Data.websites.categories }}
+  {{ range $data }}
+    <section style="margin-bottom: 2.5em;">
+      <h2>{{ .name }}</h2>
+      <p>{{ .description }}</p>
+      <div class="websites-grid">
+        {{ range .websites }}
+          <div class="website-card">
+            <a href="{{ .url }}" target="_blank" class="site-title">{{ .icon }} {{ .name }}</a>
+            <div class="site-desc">{{ .description }}</div>
+            <div class="desc-pop">{{ .description }}</div>
+          </div>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+</div>
+{{ end }} 
