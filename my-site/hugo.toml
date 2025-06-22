@@ -1,8 +1,11 @@
-baseURL = 'http://example.org/'
+baseURL = 'https://yfeier.github.io/'
 languageCode = 'zh-cn'
-title = '我的博客'
+title = '我的杂货铺'
 theme = 'FixIt'
 publishDir = "yfeier.github.io"
+
+# 添加这一行来指定主要文章目录
+mainSections = ["tech"]
 
 [params]
   # 网站描述
@@ -43,9 +46,9 @@ publishDir = "yfeier.github.io"
   postsSortOrder = "desc"
 
 [params.social]
-  GitHub = "your-github"
+  GitHub = "https://github.com/yfeier"
   Twitter = "your-twitter"
-  Email = "your-email"
+  Email = "yfeier20@gmail.com"
 
 [menu]
   [[menu.main]]
@@ -71,15 +74,15 @@ publishDir = "yfeier.github.io"
   provider = "giscus"
   # 评论系统配置
   [params.page.comment.giscus]
-    repo = "your-github-username/your-repo-name"
-    repoId = "your-repo-id"
+    repo = "yfeier/blog-giscus"
+    repoId = "1006405284"
     category = "Announcements"
-    categoryId = "your-category-id"
+    categoryId = "DIC_kwDOO_yGpM4Cr1pN"
     mapping = "pathname"
     reactionsEnabled = "1"
     emitMetadata = "0"
     inputPosition = "bottom"
-    theme = "light"
+    theme = "preferred-color-scheme"
     lang = "zh-CN"
     loading = "lazy"
 
